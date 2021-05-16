@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        jcenter()
+        dependencies {
+            classpath "io.qameta.allure:allure-gradle:2.8.1"
+        }
+    }
+}
+plugins {
+    id 'java'
+    id "io.qameta.allure" version "2.8.1"
+}
+
+repositories {
+    mavenCentral()
+}
+def allureVersion = "2.13.8"
+
+allure {
+    version = allureVersion
+    autoconfigure = true
+    aspectjweaver = true
+    allureJavaVersion = allureVersion
+    resultsDir = file('allure-report')
+}
+
+
+
+test {
+    useTestNG()
+    systemProperty 'allure.results.directory', 'build/allure-results'
+    //aspectjweaver = true
+
+    boolean clean = true
+    String configuration = 'testCompile'
+
+}
+
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+test {
+    useTestNG()
+}
+
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    compile group: 'com.codeborne', name: 'selenide', version: '5.20.4'
+    compile 'org.slf4j:slf4j-simple:1.6.4'
+    testImplementation group: 'io.qameta.allure', name: 'allure-junit5', version: '2.13.8'
+
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'allure.results.directory', 'build/allure-results'
+
+    boolean clean = true
+    String configuration = 'testCompile'
+}
