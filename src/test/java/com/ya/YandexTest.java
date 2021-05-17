@@ -14,19 +14,25 @@ import static com.ya.YandexTestStep.OpenBrouser;
 
 public class YandexTest {
 
+    static private String world = "Погода";
+    static private String url = "http://yandex.ru";
+
     @Epic(value = "Yandex")
     @Feature(value = "Открытие страницы в браузере позитивные сценарии")
     @Story(value = "Проверка поиска")
     @Test
     public void testYandexSearch() {
-        OpenBrouser("http://yandex.ru", "Java ");
+        OpenBrouser(url, world);
         Rez rez = new Rez();
         rez.getResults().shouldHave(CollectionCondition.sizeGreaterThan(1));
-        rez.getResult(0).shouldHave(text("java"));
+        rez.getResult(0).shouldHave(text(world));
         System.out.println(rez.getResult(0));
         System.out.println(rez.getResult(1));
         for (SelenideElement r : rez.getResults()) {
-            r.shouldHave(text("java"));
+            // r.shouldHave(text(world ))  ;
+            if (r.toString().contains("реклама"))
+                continue;
+            else r.shouldHave(text(world));
             System.out.println("----" + r);
         }
 
@@ -38,7 +44,7 @@ public class YandexTest {
     @Test
     public void testYandexSearchBad() {
 
-        OpenBrouser("http://yandex.ru", "!@#$ ");
+        OpenBrouser(url, "!@#$ ");
         Rez rez = new Rez();
         rez.getResults().shouldHave(size(0));
     }
