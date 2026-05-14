@@ -1,51 +1,52 @@
 package com.ya;
 
-
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
-import static com.ya.YandexTestStep.OpenBrouser;
+import static com.codeborne.selenide.Selenide.closeWebDriver;
+import static com.ya.YandexTestSteps.openYandexAndSearch;
 
+@Epic("Yandex")
+@Feature("Поиск Яндекса")
 public class YandexTest {
 
-    static private String world = "Погода";
-    static private String url = "http://yandex.ru";
+    private static final String SEARCH_QUERY = "Погода";
+    private static final String BAD_SEARCH_QUERY = "!@#$ ";
+    private static final String BASE_URL = "https://yandex.ru";
 
-    @Epic(value = "Yandex")
-    @Feature(value = "Открытие страницы в браузере позитивные сценарии")
-    @Story(value = "Проверка поиска")
-    @Test
-    public void testYandexSearch() {
-        OpenBrouser(url, world);
-        Rez rez = new Rez();
-        rez.getResults().shouldHave(CollectionCondition.sizeGreaterThan(1));
-        rez.getResult(0).shouldHave(text(world));
-        System.out.println(rez.getResult(0));
-        System.out.println(rez.getResult(1));
-        for (SelenideElement r : rez.getResults()) {
-            // r.shouldHave(text(world ))  ;
-            if (r.toString().contains("реклама"))
-                continue;
-            else r.shouldHave(text(world));
-            System.out.println("----" + r);
-        }
-
+    @AfterEach
+    public void tearDown() {
+        closeWebDriver();
     }
 
-    @Epic(value = "Yandex")
-    @Feature(value = "Открытие страницы в браузере негативные сценарии")
-    @Story(value = "Некорректный запрос")
+    @Story("Позитивный сценарий поиска")
     @Test
-    public void testYandexSearchBad() {
+    public void testYandexSearchPositive() {
+        YandexSearchPage page = openYandexAndSearch(BASE_URL, SEARCH_QUERY);
+        
+        page.getSearchResults().shouldHave(CollectionCondition.sizeGreaterThan(1));
+        
+        SelenideElement firstResult = page.getSearchResult(0);
+        firstResult.shouldHave(text(SEARCH_QUERY));
+        
+        for (SelenideElement result : page.getSearchResults()) {
+            if (!result.getText().toLowerCase().contains("реклама")) {
+                result.shouldHave(text(SEARCH_QUERY));
+            }
+        }
+    }
 
-        OpenBrouser(url, "!@#$ ");
-        Rez rez = new Rez();
-        rez.getResults().shouldHave(size(0));
+    @Story("Негативный сценарий поиска")
+    @Test
+    public void testYandexSearchNegative() {
+        YandexSearchPage page = openYandexAndSearch(BASE_URL, BAD_SEARCH_QUERY);
+        
+        page.getSearchResults().shouldHave(CollectionCondition.size(0));
     }
 }
