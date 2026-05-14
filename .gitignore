@@ -1,4 +1,47 @@
-# Project exclude paths
-/.gradle/
-/build/
-/build/classes/java/test/
+```
+# Dependencies
+.gradle/
+build/
+target/
+
+# Java compiled files
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Python (if present)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+```
