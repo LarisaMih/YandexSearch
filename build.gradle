@@ -1,14 +1,14 @@
 plugins {
     id 'java'
-    id "io.qameta.allure" version "2.12.0"
+    id 'io.qameta.allure' version '2.12.0'
 }
 
 repositories {
     mavenCentral()
 }
 
-def allureVersion = "2.24.0"
-def selenideVersion = "7.2.3"
+def allureVersion = '2.24.0'
+def selenideVersion = '7.2.3'
 
 allure {
     version = allureVersion
@@ -23,16 +23,21 @@ compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
 dependencies {
-    implementation "com.codeborne:selenide:${selenideVersion}"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.10.1"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.10.1"
+    testImplementation "com.codeborne:selenide:${selenideVersion}"
+    testImplementation platform('org.junit:junit-bom:5.10.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation "io.qameta.allure:allure-junit5:${allureVersion}"
 }
 
 test {
     useJUnitPlatform()
     systemProperty 'allure.results.directory', 'build/allure-results'
-    
+    systemProperty 'baseUrl', System.getProperty('baseUrl', 'https://yandex.ru')
+    systemProperty 'browser', System.getProperty('browser', 'chrome')
+    systemProperty 'browserSize', System.getProperty('browserSize', '1920x1080')
+    systemProperty 'headless', System.getProperty('headless', 'true')
+    systemProperty 'timeout', System.getProperty('timeout', '10000')
+
     testLogging {
         events "passed", "skipped", "failed"
     }
